@@ -1,0 +1,40 @@
+import { sticker } from '../lib/sticker.js'
+import fs from 'fs'
+
+let handler = async (m, { conn, args, text, usedPrefix, command }) => {
+    let res
+    if (command.toLowerCase().includes('lidi')) {
+        res = `https://betabotz-api.herokuapp.com/api/sticker/manusialidi?apikey=${global.bb}`
+    } else if (command.toLowerCase().includes('dino')) {
+        res = `https://betabotz-api.herokuapp.com/api/sticker/dinokuning?apikey=${global.bb}`
+    } else if (command.toLowerCase().includes('patrik') || command.toLowerCase().includes('patrick')) {
+        res = `https://betabotz-api.herokuapp.com/api/sticker/patrickgif?apikey=${global.bb}`
+    } else if (command.toLowerCase().includes('muka')) {
+        res = `https://betabotz-api.herokuapp.com/api/sticker/mukalu?apikey=${global.bb}`
+    } else if (command.toLowerCase().includes('kawanspongebob')) {
+        res = `https://betabotz-api.herokuapp.com/api/sticker/kawanspongebob?apikey=${global.bb}`
+    } else if (command.toLowerCase().includes('paimon')) {
+        res = `https://betabotz-api.herokuapp.com/api/sticker/paimon?apikey=${global.bb}`
+    } else {
+        res = `https://betabotz-api.herokuapp.com/api/sticker/${command.toLowerCase().replace(/s(tic?ker)?/g, '')}?apikey=${global.bb}`
+    }
+    let ztick = fs.readFileSync(`./media/sticker/bronya.webp`)
+    try {
+        const stiker = await sticker(false, res, global.packname, global.author)
+        await conn.sendFile(m.chat, stiker, 'sticker.webp', '', m)
+    } catch (e) {
+        console.log(e)
+        await conn.sendFile(m.chat, ztick, 'sticker.webp', '', m)
+    }
+}
+
+handler.help = ['stikeranime','stikeranimegif','stikerdadu','stikerdino','stikerkawanspongebob','stikerlidi','stikermuka','stikerpaimon','stikerpatrickgif','stikerrabbit','stikerrandom','stikerspongebob']
+handler.tags = ['searching']
+handler.command = /^(s(tic?ker)?(anime(gif)?|dadu|dino(kuning)?|kawanspongebob|(manusia)?lidi|muka(lu)?|paimon|patric?kgif|rabbit|random|spongebob))$/i
+
+handler.premium = true
+handler.limit = true
+
+export default handler
+
+const delay = time => new Promise(res => setTimeout(res, time))
